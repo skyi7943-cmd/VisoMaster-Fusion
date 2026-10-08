@@ -23,6 +23,15 @@ EXPERIMENTAL_SETTINGS_CONTROL_KEYS = frozenset(
 
 SETTINGS_LAYOUT_DATA: Any = {
     "Appearance": {
+        "LanguageSelection": {
+            "level": 1,
+            "label": "Language",
+            "options": ["Simplified Chinese", "English"],
+            "default": "Simplified Chinese",
+            "help": "Select the interface language. This does not change model names, paths, configuration keys, or technical identifiers.",
+            "exec_function": control_actions.change_language,
+            "exec_function_args": [],
+        },
         "ThemeSelection": {
             "level": 1,
             "label": "Theme",

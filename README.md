@@ -1,5 +1,7 @@
 # VisoMaster Fusion
 
+**English** | [简体中文](./README.zh-CN.md)
+
 VisoMaster Fusion is a desktop application for AI-powered face swapping, enhancement, and editing on images, videos, and live webcam feeds. It combines a polished graphical workflow with advanced model controls, batch processing, VR180 support, and GPU-accelerated inference.
 
 The project builds on the original VisoMaster work by **@argenspin** and **@Alucard24**, plus major contributions from the wider community.

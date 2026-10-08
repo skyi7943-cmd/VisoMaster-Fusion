@@ -2395,6 +2395,29 @@ class SelectionBox(QtWidgets.QComboBox, ParametersWidget):
             )
         )
 
+    def addItem(self, text, userData=None):
+        """Show translated option text while retaining its canonical value."""
+        from app.ui.i18n import SOURCE_TEXT_ROLE, tr
+
+        source = text if userData is None else userData
+        super().addItem(str(tr(text)), source)
+        self.setItemData(self.count() - 1, str(text), SOURCE_TEXT_ROLE)
+
+    def addItems(self, texts):
+        for text in texts:
+            self.addItem(text)
+
+    def currentText(self):
+        value = self.currentData()
+        return value if isinstance(value, str) else super().currentText()
+
+    def setCurrentText(self, text):
+        data_index = self.findData(text)
+        if data_index != -1:
+            self.setCurrentIndex(data_index)
+        else:
+            super().setCurrentText(text)
+
     def reset_to_default_value(self):
         # Check if selection values are dynamically retrieved
         if callable(self.selection_values) and callable(self.default_value):

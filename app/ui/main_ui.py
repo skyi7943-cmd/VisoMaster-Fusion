@@ -36,6 +36,7 @@ from app.ui.widgets.event_filters import (
 from app.ui.widgets import ui_workers
 from app.ui.widgets.common_layout_data import COMMON_LAYOUT_DATA
 from app.ui.widgets import sortable_widgets
+from app.ui import i18n
 from app.ui.widgets.denoiser_layout_data import DENOISER_LAYOUT_DATA
 from app.ui.widgets.swapper_layout_data import (
     SWAPPER_LAYOUT_DATA,
@@ -570,6 +571,13 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
             data_type="control",
             section_namespace="settings",
         )
+        language_widget = self.parameter_widgets.get("LanguageSelection")
+        if language_widget is not None:
+            language_option = i18n.language_option_default()
+            language_widget.blockSignals(True)
+            language_widget.set_value(language_option)
+            language_widget.blockSignals(False)
+            self.control["LanguageSelection"] = language_option
         layout_actions.add_widgets_to_tab_layout(
             self,
             LAYOUT_DATA=FACE_EDITOR_LAYOUT_DATA,

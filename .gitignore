@@ -6,6 +6,7 @@
 *.jpg
 *.json
 !/version.json
+!/app/ui/translations/*.json
 *.mp4
 *.onnx
 *.profile

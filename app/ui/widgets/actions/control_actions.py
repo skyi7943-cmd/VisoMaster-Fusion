@@ -13,6 +13,7 @@ import qdarktheme
 if TYPE_CHECKING:
     from app.ui.main_ui import MainWindow
 from app.processors.utils import platform_support
+from app.ui import i18n
 from app.ui.widgets.actions import common_actions as common_widget_actions
 
 #'''
@@ -191,6 +192,17 @@ def change_theme(main_window: "MainWindow", new_theme):
     app.setStyleSheet(_style)
     main_window._vram_high_style_active = None
     common_widget_actions.update_gpu_memory_progressbar(main_window)
+    main_window.update()
+
+
+def change_language(main_window: "MainWindow", language_option: str) -> None:
+    """Switch display language without changing canonical control values."""
+    i18n.set_language(i18n.language_code_from_option(language_option))
+    # Chinese labels are often wider than English labels. Re-evaluate layouts
+    # after translating so form rows and scroll areas can expand naturally.
+    main_window.updateGeometry()
+    if main_window.layout() is not None:
+        main_window.layout().activate()
     main_window.update()
 
 

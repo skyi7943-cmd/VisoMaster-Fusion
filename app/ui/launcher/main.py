@@ -8,6 +8,7 @@
 
 import sys
 from PySide6 import QtWidgets
+from app.ui import i18n
 from .core import PATHS, must_exist, apply_theme_to_app
 from .launcher_window import LauncherWindow
 
@@ -30,6 +31,7 @@ def main():
 
         # --- Create and run UI ---
         app = QtWidgets.QApplication(sys.argv)
+        i18n.install(app)
         apply_theme_to_app(app)
 
         win = LauncherWindow()

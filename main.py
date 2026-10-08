@@ -64,6 +64,9 @@ def _run_app() -> None:
     args, remaining = parser.parse_known_args()
 
     app = QtWidgets.QApplication(remaining)
+    from app.ui import i18n
+
+    i18n.install(app)
     app.setStyle(ProxyStyle())
     with open("app/ui/styles/true_dark_styles.qss", "r") as f:
         _style = f.read()

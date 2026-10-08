@@ -22,6 +22,7 @@ from app.ui.widgets.actions import control_actions
 from app.ui.widgets.actions import layout_actions
 from app.ui.widgets.actions import filter_actions
 from app.ui.widgets import ui_workers
+from app.ui import i18n
 from app.helpers.typing_helper import ParametersTypes, MarkerTypes
 import app.helpers.miscellaneous as misc_helpers
 
@@ -1001,11 +1002,11 @@ def load_saved_workspace(
                 # Create a mapping of tab text to tab indices
                 tab_texts = {}
                 for i in range(main_window.tabWidget.count()):
-                    tab_texts[main_window.tabWidget.tabText(i)] = i
+                    tab_texts[i18n.source_text(main_window.tabWidget.tabText(i))] = i
 
                 # Reorder the tabs based on the saved order
                 for i, tab_info in enumerate(tab_state["tab_order"]):
-                    tab_text = tab_info["text"]
+                    tab_text = i18n.source_text(tab_info["text"])
                     if tab_text in tab_texts:
                         current_index = tab_texts[tab_text]
                         # Only move if not already in the right position
@@ -1014,7 +1015,9 @@ def load_saved_workspace(
                             # Update the mapping after moving the tab
                             tab_texts = {}
                             for j in range(main_window.tabWidget.count()):
-                                tab_texts[main_window.tabWidget.tabText(j)] = j
+                                tab_texts[
+                                    i18n.source_text(main_window.tabWidget.tabText(j))
+                                ] = j
 
                 # Set the active tab index
                 if "current_tab_index" in tab_state:
@@ -1429,7 +1432,10 @@ def save_current_workspace(
     # Store the tab order by getting the tab text for each position
     for i in range(main_window.tabWidget.count()):
         tab_state["tab_order"].append(
-            {"text": main_window.tabWidget.tabText(i), "original_index": i}
+            {
+                "text": i18n.source_text(main_window.tabWidget.tabText(i)),
+                "original_index": i,
+            }
         )
 
     # --- Prepare Workspace Data ---
@@ -1446,10 +1452,12 @@ def save_current_workspace(
             f"[WARN] Unexpected type for current widget parameters: {type(main_window.current_widget_parameters)}. Saving empty dict."
         )
 
+    control_to_save = main_window.control.copy()
+    # Language is an application preference, not workspace processing state.
+    control_to_save.pop("LanguageSelection", None)
+
     data = {
-        "control": sanitize_state_dictionary(
-            main_window.control.copy(), main_window.control
-        ),
+        "control": sanitize_state_dictionary(control_to_save, control_to_save),
         "target_medias_data": target_medias_data,
         "selected_media_id": main_window.selected_video_button.media_id
         if isinstance(
