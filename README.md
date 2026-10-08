@@ -1,248 +1,126 @@
-# VisoMaster Fusion
+# VisoMaster Fusion 简体中文本地化版
 
-**English** | [简体中文](./README.zh-CN.md)
+[English](./README.en.md) | **简体中文**
 
-VisoMaster Fusion is a desktop application for AI-powered face swapping, enhancement, and editing on images, videos, and live webcam feeds. It combines a polished graphical workflow with advanced model controls, batch processing, VR180 support, and GPU-accelerated inference.
+VisoMaster Fusion 是一款桌面端 AI 人脸替换、增强与编辑软件，支持图片、视频、摄像头和虚拟摄像头工作流。项目提供多种换脸与人脸修复模型、精细的人脸检测和遮罩控制、批量任务、VR180 处理，以及基于 CUDA、TensorRT 和 ONNX Runtime 的 GPU 加速推理。
 
-The project builds on the original VisoMaster work by **@argenspin** and **@Alucard24**, plus major contributions from the wider community.
+本仓库是 [VisoMasterFusion/VisoMaster-Fusion](https://github.com/VisoMasterFusion/VisoMaster-Fusion) 的简体中文本地化分支。核心视频处理、换脸推理、模型加载和 GPU 调度算法均保持原样，汉化实现集中在独立的界面国际化层和离线翻译资源中。
 
----
+> [!IMPORTANT]
+> 本地化分支不会提供、重新打包或重新下载 AI 模型权重。请仅从原项目仓库及其官方发布页面获取 VisoMaster Fusion 和便携启动器。
 
-<img src=".github/screenshot_2.png" height="auto"/>
+## 中文本地化内容
 
-*All faces shown in the screenshot are synthetic demo images used for illustration.*
+本次汉化覆盖主程序与便携启动器中的主要用户界面，包括：
 
-> [!CAUTION]
-> VisoMaster Fusion is only distributed through this repository.<br>
-> Do not download or pay for VisoMaster / VisoMaster Fusion from third-party websites.<br>
-> Sites like `visomaster.com` and `visomaster.org` are not affiliated with the maintainers.
+- 主界面的菜单、按钮、标签、导航栏、标签页和状态信息；
+- 视频换脸设置、模型选择、相似度、强度和关键点相关参数；
+- 人脸检测、识别、追踪、对齐、解析器及遮罩设置；
+- 人脸修复、帧增强、表情编辑、姿态与颜色处理选项；
+- CUDA、TensorRT、ONNX Runtime、线程、显存和性能设置说明；
+- 视频与图片导入、播放器、时间轴、任务管理、录制和导出流程；
+- 工具提示、确认弹窗、错误提示、进度信息和便携启动器维护功能。
 
-## 🔗 Quick Links
+翻译资源位于 `app/ui/translations/zh_CN.json`，目前包含 1,171 条离线翻译。模型文件名、Python 标识符、内部配置键、命令行参数、API 名称和其他技术标识符不会被翻译。
 
-- [Download Portable Launcher](https://github.com/VisoMasterFusion/VisoMaster-Fusion/releases/latest/download/Start_Portable.bat)
-- [Quick Start Guide](./docs/quickstart.md)
-- [User Manual](./docs/user_manual.md)
-- [Join Discord](https://discord.gg/5rx4SQuDbp)
+## 国际化设计
 
-## 🚀 Quick Start
+- 默认界面语言为简体中文；
+- 设置页面可在“简体中文”和“English”之间切换；
+- 翻译文本与业务逻辑分离，新增界面文本可继续加入 JSON 语言资源；
+- 下拉选项显示翻译文本，但保存和传递的仍是原始规范值，避免影响模型及处理逻辑；
+- 工作区文件不保存界面语言，减少语言切换对现有工作区和用户配置的影响；
+- 中文文本使用原有 Qt 布局自动调整，不改变主题、图标和快捷键体系。
 
-Most users should use the portable launcher:
+## 主要功能
 
-1. Create a new folder where you want VisoMaster Fusion to live.
-2. Download **only** `Start_Portable.bat` from latest release.
-3. Put `Start_Portable.bat` in the new folder and run it.
+### 人脸替换与编辑
 
-The first launch downloads the portable runtime, dependencies, FFmpeg, and model files. After setup, always start VisoMaster Fusion with `Start_Portable.bat`.
+- 支持 Inswapper128、InStyleSwapper、SimSwap、GhostFace、CSCS 和 DeepFaceLive DFM 等模型；
+- 支持多张源人脸、人脸嵌入、相似度阈值和可选 ByteTrack 追踪；
+- 提供人脸相似度、关键点替换、人脸调整、表情编辑和姿态控制；
+- 可处理图片、视频、摄像头以及虚拟摄像头画面。
 
-## 🎛️ Feature Highlights
+### 遮罩、修复与增强
 
-### 🧑 Face Swapping & Editing
+- 提供遮挡、XSeg、文本提示、人脸解析、边缘、侧脸角度及嘴部遮罩；
+- 支持多种人脸修复器、二次修复、自动混合、GFPGAN-1024 和帧增强器；
+- 支持 ReF-LDM 单步与 DDIM 降噪模式；
+- 包括自动着色、颜色迁移、纹理迁移、差分、MPEG 伪影、眼睛和嘴部修复等工具。
 
-- Multiple swapper models, including Inswapper128, InStyleSwapper variants, SimSwap, GhostFace, CSCS, and DeepFaceLive DFM models.
-- Multi-face workflows with source face cards, saved embeddings, similarity thresholding, and optional ByteTrack tracking.
-- Face likeness, keypoint replacement, face adjustment, expression editing, and pose/expression controls.
-- Image, video, webcam, and virtual camera workflows.
+### 视频、任务与输出
 
-### 🎨 Masks, Restoration & Enhancement
+- 时间轴标记和逐帧参数保存；
+- 输出区间、分段渲染和问题帧扫描；
+- 工作区、任务队列及无人值守批处理；
+- 图片和视频输出、音频处理、质量控制及 FFmpeg 参数。
 
-- Occlusion, XSeg, text, face parser, border, profile-angle, and mouth-focused mask controls.
-- Face restorers, a second restorer pass, auto restore blending, GFPGAN-1024 support, and frame enhancers.
-- ReF-LDM Denoiser with single-step and DDIM modes at multiple pipeline points.
-- AutoColor, ending color transfer, texture transfer, differencing, MPEG artifact simulation, Restore Eyes, Restore Mouth, and Mouth Fit & Align.
+## 使用方法
 
-### 🎬 Video, Jobs & Output
+### 便携版
 
-- Timeline markers for saving per-frame settings and record start/end segments.
-- Issue scanning and dropped-frame review tools for checking render-sensitive frames before output.
-- Job Manager for saving workspaces, loading jobs, and running batches unattended.
-- Output controls for images, videos, multi-segment renders, audio handling, quality settings, and FFmpeg options.
+如果已经安装原项目的便携版，可将本分支代码应用到同一项目目录，并继续使用原来的 `Start.bat` 或便携启动方式。不要删除或移动现有的 `models`、依赖环境及用户工作区文件。
 
-### 🛠️ Launcher & Maintenance
+### 开发环境
 
-- Portable launcher with update, repair, dependency check, model check, model optimization, model restore, launcher self-update, and version rollback tools.
-- Providers include CUDA, TensorRT, TensorRT-Engine, and CPU, with TensorRT as the default.
-- Built-in themes include True-Dark, OLED-Black, Windows11-Dark, Dark, Dark-Blue, Light, Solarized, Dracula, Nord, Gruvbox, and Monokai.
-
-## 💻 System Requirements
-
-- **Operating system:** Windows 10 or Windows 11, 64-bit
-- **GPU:** Nvidia GPU recommended
-- **VRAM:** 6 GB minimum for basic use; 8-12 GB or more recommended for heavier workflows
-- **Driver:** Nvidia driver `>=576.57` recommended for CUDA 12.9 support
-- **Internet:** Required on first run to download dependencies and models
-- **Disk space:** 20-30 GB free space recommended
-
-The app can run on CPU, but AI processing is much slower. Most users should use the portable version unless they specifically want a manual development setup.
-
-## 📦 Installation
-
-### 🚀 Portable Version
-
-Download **only** the portable launcher from the release page:
-
-- [Download - Start_Portable.bat](https://github.com/VisoMasterFusion/VisoMaster-Fusion/releases/latest/download/Start_Portable.bat)
-
-Place it in a new folder and run it. The launcher installs everything into that folder, including Python 3.12, Git, FFmpeg, PyTorch, CUDA Toolkit , TensorRT, cuDNN, ONNX Runtime GPU, and the required model files.
-
-**You do not need any of the non-portable steps below for the portable version.**
-
-### 🧰 Non-Portable Installation
-
-Use this path only if you want to manage the Python environment yourself.
-
-**1. Clone the repository**
-
-```sh
-git clone https://github.com/VisoMasterFusion/VisoMaster-Fusion
+```powershell
+git clone https://github.com/skyi7943-cmd/VisoMaster-Fusion.git
 cd VisoMaster-Fusion
+git switch main
 ```
 
-Most users should use the `main` branch. The `dev` branch contains newer or in-progress changes.
+依赖安装和模型准备方式与原项目一致。已经配置好的便携环境无需重复下载模型或重新安装 CUDA、TensorRT、PyTorch 和 ONNX Runtime。
 
-**2. Create and activate a Python environment**
+启动主程序：
 
-Using Anaconda:
-
-```sh
-conda create -n visomaster python=3.12 -y
-conda activate visomaster
-pip install uv
-```
-
-Using uv directly:
-
-```sh
-uv venv --python 3.12
-.venv\Scripts\activate
-```
-
-**3. Install requirements**
-
-```sh
-uv pip install -r requirements_cu13.txt
-```
-
-**4. Download required models**
-
-```sh
-python download_models.py
-```
-
-**5. Install FFmpeg**
-
-On Windows, either:
-
-- Run: `winget install -e --id Gyan.FFmpeg --version 7.1.1`
-- Or download https://www.gyan.dev/ffmpeg/builds/packages/ffmpeg-7.1.1-essentials_build.zip, unzip it, and add `\<unzipped ffmpeg path>\bin` to your Windows `PATH`
-
-**6. Run the application**
-
-Open `Start.bat` on Windows, or activate your environment in a terminal inside the `VisoMaster-Fusion` directory and run:
-
-```sh
+```powershell
 python main.py
 ```
 
-To update a non-portable checkout:
+## 语言切换
 
-```sh
-git pull
-uv pip install -r requirements_cu13.txt
-python download_models.py
+启动程序后，在设置页面找到“语言”选项：
+
+- 选择“简体中文”显示中文界面；
+- 选择“English”恢复英文界面。
+
+语言切换不会改写模型名称、输出路径、处理参数键或已有项目数据。
+
+## 验证情况
+
+当前本地化实现已进行以下静态与界面级检查：
+
+- Python 语法编译检查；
+- JSON 翻译资源加载和键值检查；
+- 主窗口与启动器的离屏启动检查；
+- 简体中文和英文界面切换检查；
+- 下拉选项显示值与内部规范值分离检查；
+- 确认未修改 `app/processors`、模型文件、AI 权重及 GPU 推理算法。
+
+尚未在所有显卡、模型和视频格式组合上完成实际 GPU 长时间处理测试。完整推理性能与输出质量仍应在目标设备上验证。
+
+## 与上游同步
+
+本仓库保留原作者仓库作为上游来源。同步上游更新时，可使用：
+
+```powershell
+git fetch upstream
+git switch main
+git merge upstream/main
 ```
 
-## 📖 More Documentation
+如果上游界面新增或修改了文本，需要相应更新 `app/ui/translations/zh_CN.json`，并重新检查中文布局。
 
-- For a practical first-run guide, see [Quick Start Guide](./docs/quickstart.md).
-- For detailed workflows, settings, and feature coverage, see [User Manual](./docs/user_manual.md).
+## 原项目与致谢
 
-## 🧪 Development
+- 原项目：[VisoMasterFusion/VisoMaster-Fusion](https://github.com/VisoMasterFusion/VisoMaster-Fusion)
+- 原始 VisoMaster 作者：[@argenspin](https://github.com/argenspin)、[@Alucard24](https://github.com/Alucard24)
+- 本地化分支维护者：[@skyi7943-cmd](https://github.com/skyi7943-cmd)
 
-Please use pre-commit before `git add` and commit, and fix any issues it reports.
+感谢 VisoMaster Fusion 的原作者、维护者及社区贡献者。本地化工作的目的，是让简体中文用户更容易理解和使用原项目，不改变原项目的版权归属。
 
-Future releases use PR label-based versioning based on Semantic Versioning.
+## 许可证与使用责任
 
-```sh
-uv pip install pre-commit
-pre-commit run --all-files
-```
+本项目继续遵循原仓库的 [GNU General Public License v3.0](./LICENSE)。发布修改版本时，应保留许可证和版权信息，并按照 GPLv3 提供相应源代码。
 
-### ✅ Unit Tests
-
-The project has a test suite covering core pipeline logic such as VR math, face masks, face detectors, serialization, job validation, recording, scan tools, and widget logic. Tests run without a GPU and without Qt installed.
-
-**Setup**
-
-```sh
-uv venv --python 3.12 .venv-test
-.venv-test\Scripts\activate
-uv pip install torch torchvision --index-url https://download.pytorch.org/whl/cu130
-uv pip install numpy scipy scikit-image opencv-python pillow pytest pytest-mock
-```
-
-If you already have a `.venv` with the full `requirements_cu13.txt` installed, you can run tests directly in it.
-
-**Run tests**
-
-```sh
-python -m pytest                     # run the full suite
-python -m pytest tests/unit/         # unit tests only
-python -m pytest tests/integration/  # integration tests only
-python -m pytest -k "vr"             # filter by keyword
-python -m pytest -v                  # verbose output
-python -m pytest -vv                 # show each test
-```
-
-## 🩺 Troubleshooting
-
-- If you see CUDA or provider errors, update your Nvidia driver and restart the app.
-- If models are missing, run the launcher model check or `python download_models.py`.
-- If portable setup fails partway through, run `Start_Portable.bat` again from the same folder.
-
-## 💙 Support The Project
-
-This project was made possible by the combined efforts of **[@argenspin](https://github.com/argenspin)** and **[@Alucard24](https://github.com/alucard24)**, with support from many other members of the Discord community. If you would like to support the continued development of **VisoMaster**, you can donate to either of us.
-
-### 🙌 Mod Credits
-
-VisoMaster-Fusion would not be possible without the incredible work of:
-
-- **Job Manager Mod**: Axel (https://github.com/axel-devs/VisoMaster-Job-Manager)
-- **Experimental Mod**: Hans (https://github.com/asdf31jsa/VisoMaster-Experimental)
-- **VR180/Ref-ldm Mod**: Glat0s (https://github.com/Glat0s/VisoMaster/tree/dev-vr180)
-- **Many Optimizations**: Nyny (https://github.com/Elricfae/VisoMaster---Modded)
-- **Launcher**: Tenka (https://github.com/t3nka)
-
-### argenspin
-
-- [BuyMeACoffee](https://buymeacoffee.com/argenspin)
-- BTC: bc1qe8y7z0lkjsw6ssnlyzsncw0f4swjgh58j9vrqm84gw2nscgvvs5s4fts8g
-- ETH: 0x967a442FBd13617DE8d5fDC75234b2052122156B
-
-### Alucard24
-
-- [BuyMeACoffee](https://buymeacoffee.com/alucard_24)
-- [PayPal](https://www.paypal.com/donate/?business=XJX2E5ZTMZUSQ&no_recurring=0&item_name=Support+us+with+a+donation!+Your+contribution+helps+us+continue+improving+and+providing+quality+content.+Thank+you!&currency_code=EUR)
-- BTC: 15ny8vV3ChYsEuDta6VG3aKdT6Ra7duRAc
-
-## ⚠️ Disclaimer
-
-**VisoMaster** is a hobby project that we are making available to the community as a thank you to all of the contributors ahead of us. We've copied the disclaimer from Swap-Mukham here since it is well-written and applies 100% to this repo.
-
-We would like to emphasize that our swapping software is intended for responsible and ethical use only. We must stress that users are solely responsible for their actions when using our software.
-
-Intended Usage: This software is designed to assist users in creating realistic and entertaining content, such as movies, visual effects, virtual reality experiences, and other creative applications. We encourage users to explore these possibilities within the boundaries of legality, ethical considerations, and respect for others' privacy.
-
-Ethical Guidelines: Users are expected to adhere to a set of ethical guidelines when using our software. These guidelines include, but are not limited to:
-
-Not creating or sharing content that could harm, defame, or harass individuals. Obtaining proper consent and permissions from individuals featured in the content before using their likeness. Avoiding the use of this technology for deceptive purposes, including misinformation or malicious intent. Respecting and abiding by applicable laws, regulations, and copyright restrictions.
-
-Privacy and Consent: Users are responsible for ensuring that they have the necessary permissions and consents from individuals whose likeness they intend to use in their creations. We strongly discourage the creation of content without explicit consent, particularly if it involves non-consensual or private content. It is essential to respect the privacy and dignity of all individuals involved.
-
-Legal Considerations: Users must understand and comply with all relevant local, regional, and international laws pertaining to this technology. This includes laws related to privacy, defamation, intellectual property rights, and other relevant legislation. Users should consult legal professionals if they have any doubts regarding the legal implications of their creations.
-
-Liability and Responsibility: We, as the creators and providers of the deep fake software, cannot be held responsible for the actions or consequences resulting from the usage of our software. Users assume full liability and responsibility for any misuse, unintended effects, or abusive behavior associated with the content they create.
-
-By using this software, users acknowledge that they have read, understood, and agreed to abide by the above guidelines and disclaimers. We strongly encourage users to approach this technology with caution, integrity, and respect for the well-being and rights of others.
-
-Remember, technology should be used to empower and inspire, not to harm or deceive. Let's strive for ethical and responsible use of deep fake technology for the betterment of society.
+人脸替换技术仅应在合法、合规、获得必要授权且尊重他人隐私的情况下使用。用户需自行承担内容制作和传播所产生的责任，不得将本软件用于欺骗、骚扰、诽谤、侵犯隐私或其他违法用途。
